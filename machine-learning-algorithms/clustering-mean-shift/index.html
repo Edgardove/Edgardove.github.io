@@ -1,6 +1,3 @@
-<?php
-    require_once '../../php/app_sources.php';
-?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description"content="">
-    <link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="highlight/a11y-light.css">
     <link rel="stylesheet" href="../../css/post/index.css">
@@ -40,10 +37,10 @@
     <script src="highlight/highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
     <script>
-        let start_time=1574709338;
+        let start_time=1574709356;
     </script>
     <script src="../../js/post/index.js"></script>
-    <title>Clustering: KMeans | <?php echo APP_NAME; ?></title>
+    <title>Clustering: Mean Shift | ML</title>
 </head>
 <body>
     <div class="container">
@@ -57,7 +54,7 @@
                     
                     <i class="fa fa-bookmark-o" id="bookmark"></i>
 
-                    <span class="date_text">Edition time</span>
+                    
                 </header>
 
                 <section class="slides">
@@ -66,70 +63,67 @@
                             <h1>Overview</h1>
 
                             <p class="article">
-                                <em>K-Means</em> is about dividing a dataset into <em>k</em> groups, and each data
-                                belongs to the group with the nearest mean or center.
+                                <em>Mean Shift</em> is an iterative technique used for clustering a dataset. And it does by
+                                locating "high density areas" into the dataset. A graphical example would be this:
                             </p>
 
-                            <br>
+                            <img src="../../images/posts/0.png" alt="MEAN SHIFT DATASET" class="image">
 
                             <p class="article">
-                                For example the following data is given, and we set <em>k</em>=5 (five clusters or groups): 
+                                The algorithm search and locate the zones with more density points
                             </p>
 
-                            <br>
-
-                            <img src="../../images/posts/kmeans-non-means.png" alt="DATASET" class="image">
-
-                            <br>
-
-                            <img src="../../images/posts/kmeans-means.png" alt="CLUSTER MARKS" class="image">
-                            
-                            <br>
-
-                            <img src="../../images/posts/kmeans-clustering.gif" alt="CLUSTERING ANIMATION" class="image">
+                            <img src="../../images/posts/clustering_marks.png" alt="CLUSTERING MARKS" class="image">
                         
-                            <br>
-
                             <p class="article">
-                                When the data is divided into <em>k</em> parts, we have clustered the dataset.
+                                And group the data:
                             </p>
 
-                            <br>
-
-                            <img src="../../images/posts/kmeans-clustering.png" alt="DATASET CLUSTERING" class="image">
+                            <img src="../../images/posts/clustering.gif" alt="CLUSTERING ANIMATION">
                         </section>
                     </section>
 
                     <section class="slide">
                         <section class="content">
-                            <h1>Standard algorithm</h1>
-
-                            <h2>Random partition</h2>
+                            <h1>Algorithm</h1>
 
                             <ul>
-                                <li>Set \(k\): number of clusters</li>
                                 <li>Let \(\boldsymbol{X}\) be the dataset</li>
-                                <li>Let \(\boldsymbol{S}_i=\emptyset\text{, for i=1,...,}k\)</li>
-                                <li>Let \(r\) be a random variable following the discrete uniform distribution over the set \(\{1,...,k\}\)</li>
-                                <li>\(\boldsymbol{S}_r=\boldsymbol{S}_r\cup\{\boldsymbol{x}\},\quad \forall \boldsymbol{x} \in \boldsymbol{X}\)</li>
+                                <li>\(\boldsymbol{S}\gets\boldsymbol{X}\)</li>
+                                <li>
+                                    Let \(K(\boldsymbol{x})\) be a unit flat kernel:
+
+                                    <p class="latex">
+                                        \[
+                                        K(\boldsymbol{x})=
+                                        \begin{cases}
+                                        1   & \quad \text{if } \|\boldsymbol{x}\| \le 1 \\
+                                        0   & \quad \text{if } \|\boldsymbol{x}\| > 1
+                                        \end{cases}
+                                        \]
+                                    </p>
+                                </li>
+                                <li>Let \(h>0\) be the bandwidth: a free parameter</li>
                             </ul>
 
-                            <h2>Assignment and update</h2>
+                            <h2>Iteration</h2>
 
                             <ol>
                                 <li>
+                                    <p class="latex">\[\boldsymbol{M}=\emptyset\]</p>
+                                </li>
+                                <li>
                                     <p class="latex">
-                                        \[\boldsymbol{m}_i^{(t+1)}=\frac{1}{|\boldsymbol{S}_i^{(t)}|}\displaystyle\sum_{\boldsymbol{x} \in \boldsymbol{S}^{(t)}} \boldsymbol{x}, \text{ for } i=1,...,k\]
+                                        \[
+                                        \boldsymbol{m}(\boldsymbol{x})=\frac{\displaystyle\sum_{\boldsymbol{s} \in \boldsymbol{S}}K \left( \frac{\boldsymbol{s} - \boldsymbol{x}}{h} \right) \boldsymbol{s}}{\displaystyle\sum_{\boldsymbol{s} \in \boldsymbol{S}}K \left( \frac{\boldsymbol{s} - \boldsymbol{x}}{h} \right)},
+                                        \quad \boldsymbol{M} \gets \boldsymbol{M} \cup \{\boldsymbol{m}(\boldsymbol{x})\},
+                                        \quad \forall \boldsymbol{x} \in \boldsymbol{X}
+                                        \]
                                     </p>
                                 </li>
                                 <li>
                                     <p class="latex">
-                                        \[\boldsymbol{S}_i^{(t)}=\{\boldsymbol{x}:\|\boldsymbol{x}-\boldsymbol{m}_i\|^2 \le \|\boldsymbol{x}-\boldsymbol{m}_j\|^2 \quad \forall j, 1 \le j \le k\}\]
-                                    </p>
-                                </li>
-                                <li>
-                                    <p class="latex">
-                                        \[\text{if }\exists \boldsymbol{x} \neq \boldsymbol{z}, \quad \forall \boldsymbol{x} \in \boldsymbol{S}_i^{(t)} \land \forall \boldsymbol{z} \in \boldsymbol{S}_i^{(t+1)}:\quad \text{repeat 1 and 2}\]
+                                    \[\text{if  }\exists \boldsymbol{s} \neq \boldsymbol{m}, \quad \forall \boldsymbol{s} \in \boldsymbol{S} \land \forall \boldsymbol{m} \in \boldsymbol{M}:\quad \boldsymbol{S} \gets \boldsymbol{M} \text{, repeat 1 and 2}\]
                                     </p>
                                 </li>
                             </ol>
@@ -137,7 +131,7 @@
                             <br>
 
                             <p class="article">
-                                When the step three holds, \(\boldsymbol{S}_i\) are the set of clusters and \(\boldsymbol{m}_i\) are the means.
+                                When the step three holds, \(\boldsymbol{S}\) is the set with the means or centroids of the dataset \(\boldsymbol{X}\).
                             </p>
                         </section>
                     </section>
@@ -146,64 +140,63 @@
                         <section class="content">
                             <h1>Algorithm in python using numpy</h1>
 
-                            <br>
-
                             <pre><code class="python">
-def random_partition(data, k):
-	clusters=[[] for i in range(k)]
-	means=[]
+def unit_flat_kernel(x, x_i, h):
+    n=numpy.linalg.norm((x-x_i)/h)
 
-	for i in data:
-		clusters[random.randint(0,k-1)].append(i)
+    if n<=1: return 1
+    else: return 0
 
-	for cluster in clusters:
-		means.append(numpy.array(cluster, dtype=numpy.dtype('Float64')).mean(axis=0))
+def mean_shift(data, bandwidth):
+    X=data
+    S=data
+    h=bandwidth
+    c=0
 
-	return numpy.array(means, dtype=numpy.dtype('Float64'))
+    while True:
+        M=[]
+        prev_X=X
+        for x in X:
+            num=[]
+            den=0
+            for x_i in S:
+                num.append(unit_flat_kernel(x, x_i, h)*x_i)
+                den+=unit_flat_kernel(x, x_i, h)
 
-def kmeans(data, means, k):
-	iteration=1
+            num=numpy.array(num, dtype=numpy.dtype('Float64'))
 
-	while True:
-		old_centroids=means
+            m=numpy.sum(num, axis=0)/den
 
-		clusters=[[] for i in range(k)]
+            M.append(numpy.sum(num, axis=0)/den)
 
-		for i in range(k):
-			for datum in data:
-				counter=0
 
-				for mean in means:
-					if math.pow(linalg.norm(datum-means[i]),2) <= math.pow(linalg.norm(datum - mean),2):
-						counter+=1
+        M=numpy.array(M, dtype=numpy.dtype('Float64'))
 
-					if(counter==k):
-						clusters[i].append(datum)
+        X=numpy.unique(M, axis=0)
 
-		means=[]
+        if numpy.array_equal(X, prev_X):
+            print('clustered after ' + str(c) + ' iterations')
 
-		for cluster in clusters:
-			means.append(numpy.array(cluster, dtype=numpy.dtype('Float64')).mean(axis=0))
+            clusters=[]
 
-		means=numpy.array(means, dtype=numpy.dtype('Float64'))
+            for t in range(len(X)): 
+                clusters.append([])
 
-		new_centroids=means
+            for point in data:
+                distances=[]
 
-		if(numpy.array_equal(old_centroids, new_centroids)):
-			print("non change after " + str(iteration) + " iterations")
+                for centroid in X:
+                    distances.append(numpy.linalg.norm(centroid - point))
 
-			break
+                idx=distances.index(min(distances))
 
-		iteration+=1
+                clusters[idx].append(point)
 
-	return {
-		"clusters": clusters,
-		"means": means
-	}
+            break
 
-initial_means=random_partition(data, k)
+        c+=1
 
-output=kmeans(data, initial_means, k)
+    return {'centroids': X, 'clusters': clusters}
                             </code></pre>
                         </section>
                     </section>

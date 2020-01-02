@@ -137,32 +137,32 @@ $(document).ready(function(){
         changeMenu($('.menu-index'), index);
     });
 
-    function elapsing_time(start, end){
-        let elapsed=end-start, txt;
+    // function elapsing_time(start, end){
+    //     let elapsed=end-start, txt;
 
-        if(elapsed/60 < 1){ // seconds
-            txt='edited ' + elapsed + ' seconds ago';
-        }
-        else if(elapsed/60 >= 1 && elapsed/60 < 60){ // minutes
-            txt='edited ' + Math.floor(elapsed/60) + ' minute/s ago';
-        }
-        else if(elapsed/60 >= 60 && elapsed/60 < 1440){ // hours
-            txt='edited ' + Math.floor(elapsed/60/60) + ' hour/s ago';
-        }
-        else if(elapsed/60 >= 1440 && elapsed/86400 < 30){ // days
-            txt='edited ' + Math.floor(elapsed/86400) + ' day/s ago';
-        }
-        else if(elapsed/86400 >= 30 && Math.floor(elapsed/86400/30) < 12){ // months
-            txt='edited ' + Math.floor(elapsed/86400/30) + ' month/s ago';
-        }
-        else if(elapsed/86400 >= 30 && Math.floor(elapsed/86400/30) >= 12){ // years
-            txt='edited ' + Math.floor(elapsed/86400/30/12) + ' year/s ago';
-        }
+    //     if(elapsed/60 < 1){ // seconds
+    //         txt='edited ' + elapsed + ' seconds ago';
+    //     }
+    //     else if(elapsed/60 >= 1 && elapsed/60 < 60){ // minutes
+    //         txt='edited ' + Math.floor(elapsed/60) + ' minute/s ago';
+    //     }
+    //     else if(elapsed/60 >= 60 && elapsed/60 < 1440){ // hours
+    //         txt='edited ' + Math.floor(elapsed/60/60) + ' hour/s ago';
+    //     }
+    //     else if(elapsed/60 >= 1440 && elapsed/86400 < 30){ // days
+    //         txt='edited ' + Math.floor(elapsed/86400) + ' day/s ago';
+    //     }
+    //     else if(elapsed/86400 >= 30 && Math.floor(elapsed/86400/30) < 12){ // months
+    //         txt='edited ' + Math.floor(elapsed/86400/30) + ' month/s ago';
+    //     }
+    //     else if(elapsed/86400 >= 30 && Math.floor(elapsed/86400/30) >= 12){ // years
+    //         txt='edited ' + Math.floor(elapsed/86400/30/12) + ' year/s ago';
+    //     }
 
-        return txt;
-    }
+    //     return txt;
+    // }
 
-    $('.date_text').text(elapsing_time(start_time, Math.round(Date.now()/1000)));
+    // $('.date_text').text(elapsing_time(start_time, Math.round(Date.now()/1000)));
 
     $('#bookmark').click(function(){
         if(window.localStorage.getItem('bookmark')==null){
