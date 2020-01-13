@@ -1,0 +1,115 @@
+---
+layout: post
+title: "SVM summary"
+category: machine-learning-algorithms
+description: "There are different methods to separate one class with another ( binary classification ) following the notions of a SVM. Two of the simplest, but not for that less effectives or efficients, are PEGASOS and the Dual Coordinate Descent approach respectively."
+tags: [programming languages, math, maths, computers, machine learning, algorithms, machine learning algorithms, neural nets, neural networks, binary numbers, classification, multiclass classification, binary classification, clustering]
+---
+
+<section class="slide">
+    <article class="content" itemprop="articleBody">
+        <h1>Overview</h1>
+
+        <p class="article">
+            - It's used for binary and multi-class classification.
+        </p>
+        <p class="article">
+            - It's a supervised procedure because the data is already grouped and labeled.
+        </p>
+        <p class="article">
+            - Given a set of training features and their corresponding labels the idea is to label a 
+            new unlabelled feature based on its attributes with respect to the attributes of the
+            training features. This is like labeling a person as "bad" or "good" based on her/his
+            behavior and our prejudice of how a "good" or "bad" person should behave.
+        </p>
+        <p class="article">
+            - Every feature is a vector with <em>n</em> components/attributes.
+        </p>
+        <p class="article">
+            - Every label or class is represented with a number.
+        </p>
+        <p class="article">
+            - This task of labelling a new unlabelled feature is done with a hyperplane or set of hyperplanes
+            previously constructed with the training features.
+        </p>
+    </article>
+</section>
+
+<section class="slide">
+    <article class="content" itemprop="articleBody">
+        <h1>Informal glossary for SVM</h1>
+
+        <p class="article">
+            - <strong>Data</strong>: set of features ( vectors ) and labels ( numbers ).
+        </p>
+        <p class="article">
+            - <strong>Feature</strong>: a vector with <em>n</em> - components/attributes.
+        </p>
+        <p class="article">
+            - <strong>Feature space</strong>: space higher ( dimension ) than the input space.
+        </p>
+        <p class="article">
+            - <strong>Hard margin</strong>: it's when the samples are perfectly separated and as a result leave an empty space, like an unoccupied road: the margin.
+        </p>
+        <p class="article">
+            - <strong>Hyperplane</strong>: is the <em>( n - 1 )</em> - dimensional "wall" that separates different
+            features into a <em>n</em> - dimensinal "house".
+        </p>
+        <p class="article">
+            - <strong>Input space</strong>: is  the original space of the data.
+        </p>
+        <p class="article">
+            - <strong>Kernel</strong>: is  a similarity function in the sense that it takes two vectors as input
+            and return the similarity ( inner product ) of these objects in a higher space.
+        </p>
+        <p class="article">
+            - <strong>Kernel trick</strong>: allow us to use linear algorithms to nonlinear data applying a kernel.
+            This kernel takes as input ( arguments ) two "nonlinear vectors" and return the inner product
+            of two "linear vectors" in a higher space.
+        </p>
+        <p class="article">
+            - <strong>Label/class</strong>: is  the output of a feature, representing "the type" of feature we
+            are dealing with.
+        </p>
+        <p class="article">
+            - <strong>Maps</strong>: It's used as a verb that means "to assign".
+        </p>
+        <p class="article">
+            - <strong>Similarity function/measure</strong>: is a real-valued function that measures the similarity
+            between two objects ( e.g.: vectors ). The higher its value grater similarity. It can
+            takes zero or negative values for very dissimilar objects.
+        </p>
+        <p class="article">
+            - <strong>Soft margin</strong>: It's when the vast majority of the samples are perfectly separated by a margin, however there are some that are on the wrong side and a penalty <em>hyperparameter</em> must be included.
+        </p>
+        <p class="article">
+            - <strong>Supervised</strong>: based on samples already labelled, we label a new unlabeled sample. The
+            label on every already labelled sample is called <em>the supervisory signal</em>
+        </p>
+    </article>
+</section>
+
+<section class="slide">
+    <article class="content" itemprop="articleBody">
+        <h1>Resolutions</h1>
+
+        <p class="article">
+            There are different methods to separate one class with another ( binary classification )
+            following the notions of a SVM. Two of the simplest, but not for that less effectives or
+            efficients, are PEGASOS and the Dual Coordinate Descent approach respectively.
+            Both are described in these links: 
+        </p>
+
+        <br>
+
+        <p class="article">
+            <a class="link" href="../binary-classification-dual-coordinate-descent">Dual Coordiante Descent</a>
+        </p>
+
+        <br>
+
+        <p class="article">
+            <a class="link" href="../binary-classification-pegasos">PEGASOS</a>
+        </p>
+    </article>
+</section>
