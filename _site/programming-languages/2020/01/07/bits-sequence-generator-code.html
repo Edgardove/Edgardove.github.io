@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-155264062-1"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-155264062-1');
+  </script>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Bits sequence generator code | Machine Learning with numerical examples</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Bits sequence generator code" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This is a code example of a bits sequence generator using JavaScript." />
+<meta property="og:description" content="This is a code example of a bits sequence generator using JavaScript." />
+<link rel="canonical" href="http://localhost:4000/programming-languages/2020/01/07/bits-sequence-generator-code.html" />
+<meta property="og:url" content="http://localhost:4000/programming-languages/2020/01/07/bits-sequence-generator-code.html" />
+<meta property="og:site_name" content="Machine Learning with numerical examples" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-01-07T00:00:00-04:00" />
+<script type="application/ld+json">
+{"headline":"Bits sequence generator code","dateModified":"2020-01-07T00:00:00-04:00","datePublished":"2020-01-07T00:00:00-04:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/programming-languages/2020/01/07/bits-sequence-generator-code.html"},"url":"http://localhost:4000/programming-languages/2020/01/07/bits-sequence-generator-code.html","description":"This is a code example of a bits sequence generator using JavaScript.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/post.css">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        messageStyle: 'none',
+        tex2jax: {preview: 'none'},
+        CommonHTML: {
+          scale: 97
+        }
+      });
+
+      MathJax.Hub.Register.StartupHook("End", function () {
+        document.getElementsByClassName('mask_load')[0].style.display='none';
+      });
+    </script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/assets/jquery_3.3.1.min.js"></script>
+    <script src="/assets/post.js"></script><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Machine Learning with numerical examples" /></head>
+  <body>
+	<div class="container">
+	<main>
+		<section class="menu_slide menu_invisible" itemscope itemtype="http://schema.org/ItemList">
+		
+		</section>
+
+		<section class="slides_content">
+		<header class="post-header">
+			<h1 class="post-title p-name" itemprop="name headline">Bits sequence generator code</h1>
+			<p class="post-meta">
+				<time class="dt-published" datetime="2020-01-07T00:00:00-04:00" itemprop="datePublished">Jan 7, 2020
+				</time></p>
+
+			<i class="fa fa-bars" id="menu"></i>
+
+			<a href="/" title="Home">
+				<i class="fa fa-home"></i>
+			</a>
+			<a href="/about" title="About">
+				<i class="fa fa-question-circle"></i>
+			</a>
+			<a href="/privacy-policies" title="Read privacy policies">
+				<i class="fa fa-user-secret"></i>
+			</a>
+		</header>
+
+		<section class="slides" itemscope itemtype="http://schema.org/PresentationDigitalDocument" itemprop="articleBody">
+			<section class="slide">
+    <article class="content" itemprop="articleBody">
+        <h1>Bits sequence generator</h1>
+
+        <p class="article">
+            A demo of this code can be found <a class="link" href="/assets/tools/bits-sequence">here</a>.
+        </p>
+
+        <br>
+
+        <p class="article">
+            This is a function to normalize a binary number:
+        </p>
+
+        <br>
+
+        <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">normalize</span><span class="p">(</span><span class="nx">n</span><span class="p">){</span>
+    <span class="kd">let</span> <span class="nx">sign</span><span class="o">=</span><span class="nx">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="dl">'</span><span class="s1">-</span><span class="dl">'</span> <span class="p">?</span> <span class="dl">'</span><span class="s1">1</span><span class="dl">'</span> <span class="p">:</span> <span class="dl">'</span><span class="s1">0</span><span class="dl">'</span><span class="p">,</span> <span class="nx">num</span><span class="o">=</span><span class="nx">n</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/</span><span class="se">[</span><span class="sr">-</span><span class="se">]</span><span class="sr">/</span><span class="p">,</span><span class="dl">''</span><span class="p">),</span>
+        <span class="nx">point_pos</span><span class="o">=</span><span class="nx">num</span><span class="p">.</span><span class="nx">search</span><span class="p">(</span><span class="sr">/</span><span class="se">[</span><span class="sr">.</span><span class="se">]</span><span class="sr">/</span><span class="p">)</span><span class="o">==-</span><span class="mi">1</span> <span class="p">?</span> <span class="nx">num</span><span class="p">.</span><span class="nx">length</span> <span class="p">:</span> <span class="nx">num</span><span class="p">.</span><span class="nx">search</span><span class="p">(</span><span class="sr">/</span><span class="se">[</span><span class="sr">.</span><span class="se">]</span><span class="sr">/</span><span class="p">),</span>
+        <span class="nx">pos</span><span class="o">=</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">num</span><span class="p">)</span><span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="mi">1</span> <span class="p">?</span> <span class="mi">0</span> <span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="nx">num</span><span class="p">.</span><span class="nx">length</span><span class="o">==</span><span class="mi">0</span> <span class="o">||</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">num</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">){</span>
+        <span class="k">return</span> <span class="p">{</span><span class="na">n</span><span class="p">:</span><span class="dl">'</span><span class="s1">0.0</span><span class="dl">'</span><span class="p">,</span> <span class="na">exp</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="na">sign</span><span class="p">:</span> <span class="nx">sign</span><span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span><span class="p">(</span><span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="nx">i</span><span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">num</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">num</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">){</span>
+            <span class="nx">pos</span><span class="o">=</span><span class="nx">i</span><span class="o">-</span><span class="nx">pos</span><span class="p">;</span>
+
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="nx">num</span><span class="o">=</span><span class="nx">num</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/</span><span class="se">[</span><span class="sr">.</span><span class="se">]</span><span class="sr">/</span><span class="p">,</span><span class="dl">''</span><span class="p">);</span>
+
+    <span class="kd">let</span> <span class="nx">output</span> <span class="o">=</span> <span class="dl">''</span><span class="o">+</span><span class="p">[</span><span class="nx">num</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">pos</span><span class="p">),</span> <span class="dl">'</span><span class="s1">.</span><span class="dl">'</span><span class="p">,</span> <span class="nx">num</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="nx">pos</span><span class="p">)].</span><span class="nx">join</span><span class="p">(</span><span class="dl">''</span><span class="p">);</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="nx">output</span><span class="o">==</span><span class="dl">'</span><span class="s1">1.</span><span class="dl">'</span><span class="p">)</span> <span class="nx">output</span><span class="o">=</span><span class="nx">output</span><span class="o">+</span><span class="dl">'</span><span class="s1">0</span><span class="dl">'</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="na">n</span><span class="p">:</span> <span class="nx">output</span><span class="p">,</span> <span class="na">exp</span><span class="p">:</span> <span class="nx">point_pos</span> <span class="o">-</span> <span class="nx">pos</span><span class="p">,</span> <span class="na">sign</span><span class="p">:</span> <span class="nx">sign</span><span class="p">}</span>
+<span class="p">}</span>
+        </code></pre></figure>
+
+        <p class="article">
+            With this output, we can generate the 3 parts of the bits sequence: sign, exponent, significand.
+            Given an input:
+        </p>
+
+        <br>
+
+        <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">input</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">input</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="kd">let</span> <span class="nx">allowed</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/</span><span class="se">[^</span><span class="sr">0-9</span><span class="se">\-\.]</span><span class="sr">/</span><span class="p">,</span><span class="dl">''</span><span class="p">);</span>
+    
+    <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">val</span><span class="p">(</span><span class="nx">allowed</span><span class="p">);</span>
+
+    <span class="kd">let</span> <span class="nx">prec_significand</span><span class="o">=</span><span class="mi">27</span><span class="p">,</span> <span class="nx">prec_exp</span><span class="o">=</span><span class="mi">7</span><span class="p">;</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#type</span><span class="dl">'</span><span class="p">).</span><span class="nx">val</span><span class="p">()</span><span class="o">==</span><span class="dl">'</span><span class="s1">64</span><span class="dl">'</span><span class="p">){</span>
+        <span class="nx">prec_significand</span><span class="o">=</span><span class="mi">56</span><span class="p">;</span>
+        <span class="nx">prec_exp</span><span class="o">=</span><span class="mi">10</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="kd">let</span> <span class="nx">binary_number</span><span class="o">=</span><span class="nx">decimal_to_binary</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">val</span><span class="p">(),</span><span class="nx">prec_significand</span><span class="p">),</span>
+        <span class="nx">unsigned_exponent</span><span class="o">=</span><span class="mi">127</span><span class="o">+</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">normalize</span><span class="p">(</span><span class="nx">binary_number</span><span class="p">).</span><span class="nx">exp</span><span class="p">)</span><span class="o">+</span><span class="dl">''</span><span class="p">;</span>
+        
+    <span class="kd">let</span> <span class="nx">significand</span><span class="o">=</span><span class="nx">normalize</span><span class="p">(</span><span class="nx">binary_number</span><span class="p">).</span><span class="nx">n</span><span class="p">,</span>
+        <span class="nx">exponent</span><span class="o">=</span><span class="nx">decimal_to_binary</span><span class="p">(</span><span class="nx">unsigned_exponent</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="nx">sign</span><span class="o">=</span><span class="nx">normalize</span><span class="p">(</span><span class="nx">binary_number</span><span class="p">).</span><span class="nx">sign</span><span class="p">;</span>
+
+    <span class="nx">significand</span><span class="o">=</span><span class="nx">significand</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/0+1</span><span class="se">\D</span><span class="sr">/</span><span class="p">,</span><span class="dl">'</span><span class="s1">1.</span><span class="dl">'</span><span class="p">);</span>
+    
+    <span class="k">for</span><span class="p">(</span><span class="nx">i</span><span class="o">=</span><span class="nx">significand</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="nx">i</span><span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">prec_significand</span><span class="o">-</span><span class="mi">3</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+        <span class="nx">significand</span><span class="o">+=</span><span class="dl">'</span><span class="s1">0</span><span class="dl">'</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">significand</span><span class="o">=</span><span class="nx">significand</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nx">prec_significand</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span>
+
+    <span class="k">for</span><span class="p">(</span><span class="nx">i</span><span class="o">=</span><span class="nx">exponent</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="nx">i</span><span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">prec_exp</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+        <span class="nx">exponent</span><span class="o">=</span><span class="dl">'</span><span class="s1">0</span><span class="dl">'</span><span class="o">+</span><span class="nx">exponent</span><span class="p">;</span>
+    <span class="p">}</span>
+
+
+    <span class="nx">bits_sequence</span><span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="nx">sign</span> <span class="o">+</span> <span class="dl">'</span><span class="s1"> </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">exponent</span> <span class="o">+</span> <span class="dl">'</span><span class="s1"> </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">significand</span><span class="p">);</span>
+
+    <span class="nx">bfpn</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">normalize</span><span class="p">(</span><span class="nx">binary_number</span><span class="p">).</span><span class="nx">n</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/0+1</span><span class="se">\D</span><span class="sr">/</span><span class="p">,</span><span class="dl">'</span><span class="s1">1.</span><span class="dl">'</span><span class="p">)</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">x2&amp;lt;sup&gt;</span><span class="dl">'</span> <span class="o">+</span> <span class="nx">normalize</span><span class="p">(</span><span class="nx">binary_number</span><span class="p">).</span><span class="nx">exp</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">&amp;lt;/sup&gt;</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">});</span>
+        </code></pre></figure>
+    </article>
+</section>
+		</section>
+
+		<section class="buttons_content">
+			<button class="btn_action" id="back">
+				&lt;
+			</button>
+
+			<button class="btn_action" id="next">
+				&gt;
+			</button>
+		</section>
+		</section>
+	</main>
+	</div>
+</body>
+</html>
+

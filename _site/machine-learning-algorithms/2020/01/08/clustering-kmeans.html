@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-155264062-1"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-155264062-1');
+  </script>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Clustering: KMeans | Machine Learning with numerical examples</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Clustering: KMeans" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="K-Menas is about dividing a dataset into k groups, and each data belongs to the group with the nearest mean or center." />
+<meta property="og:description" content="K-Menas is about dividing a dataset into k groups, and each data belongs to the group with the nearest mean or center." />
+<link rel="canonical" href="http://localhost:4000/machine-learning-algorithms/2020/01/08/clustering-kmeans.html" />
+<meta property="og:url" content="http://localhost:4000/machine-learning-algorithms/2020/01/08/clustering-kmeans.html" />
+<meta property="og:site_name" content="Machine Learning with numerical examples" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-01-08T00:00:00-04:00" />
+<script type="application/ld+json">
+{"headline":"Clustering: KMeans","dateModified":"2020-01-08T00:00:00-04:00","datePublished":"2020-01-08T00:00:00-04:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/machine-learning-algorithms/2020/01/08/clustering-kmeans.html"},"url":"http://localhost:4000/machine-learning-algorithms/2020/01/08/clustering-kmeans.html","description":"K-Menas is about dividing a dataset into k groups, and each data belongs to the group with the nearest mean or center.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/post.css">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        messageStyle: 'none',
+        tex2jax: {preview: 'none'},
+        CommonHTML: {
+          scale: 97
+        }
+      });
+
+      MathJax.Hub.Register.StartupHook("End", function () {
+        document.getElementsByClassName('mask_load')[0].style.display='none';
+      });
+    </script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/assets/jquery_3.3.1.min.js"></script>
+    <script src="/assets/post.js"></script><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Machine Learning with numerical examples" /></head>
+  <body>
+	<div class="container">
+	<main>
+		<section class="menu_slide menu_invisible" itemscope itemtype="http://schema.org/ItemList">
+		
+		</section>
+
+		<section class="slides_content">
+		<header class="post-header">
+			<h1 class="post-title p-name" itemprop="name headline">Clustering: KMeans</h1>
+			<p class="post-meta">
+				<time class="dt-published" datetime="2020-01-08T00:00:00-04:00" itemprop="datePublished">Jan 8, 2020
+				</time></p>
+
+			<i class="fa fa-bars" id="menu"></i>
+
+			<a href="/" title="Home">
+				<i class="fa fa-home"></i>
+			</a>
+			<a href="/about" title="About">
+				<i class="fa fa-question-circle"></i>
+			</a>
+			<a href="/privacy-policies" title="Read privacy policies">
+				<i class="fa fa-user-secret"></i>
+			</a>
+		</header>
+
+		<section class="slides" itemscope itemtype="http://schema.org/PresentationDigitalDocument" itemprop="articleBody">
+			<section class="slide">
+    <article class="content" itemprop="articleBody">
+        <h1>Overview</h1>
+
+        <p class="article">
+            <em>K-Means</em> is about dividing a dataset into <em>k</em> groups, and each data
+            belongs to the group with the nearest mean or center.
+        </p>
+
+        <br>
+
+        <p class="article">
+            For example the following data is given, and we set <em>k</em>=5 (five clusters or groups): 
+        </p>
+
+        <br>
+
+        <img src="/assets/images/posts/kmeans-non-means.png" alt="DATASET" class="image">
+
+        <br>
+
+        <img src="/assets/images/posts/kmeans-means.png" alt="CLUSTER MARKS" class="image">
+        
+        <br>
+
+        <img src="/assets/images/posts/kmeans-clustering.gif" alt="CLUSTERING ANIMATION" class="image">
+    
+        <br>
+
+        <p class="article">
+            When the data is divided into <em>k</em> parts, we have clustered the dataset.
+        </p>
+
+        <br>
+
+        <img src="/assets/images/posts/kmeans-clustering.png" alt="DATASET CLUSTERING" class="image">
+    </article>
+</section>
+
+<section class="slide">
+    <article class="content" itemprop="articleBody">
+        <h1>Standard algorithm</h1>
+
+        <h2>Random partition</h2>
+
+        <ul>
+            <li>Set \(k\): number of clusters</li>
+            <li>Let \(\boldsymbol{X}\) be the dataset</li>
+            <li>Let \(\boldsymbol{S}_i=\emptyset\text{, for i=1,...,}k\)</li>
+            <li>Let \(r\) be a random variable following the discrete uniform distribution over the set \(\{1,...,k\}\)</li>
+            <li>\(\boldsymbol{S}_r=\boldsymbol{S}_r\cup\{\boldsymbol{x}\},\quad \forall \boldsymbol{x} \in \boldsymbol{X}\)</li>
+        </ul>
+
+        <h2>Assignment and update</h2>
+
+        <ol>
+            <li>
+                <p class="latex">
+                    \[\boldsymbol{m}_i^{(t+1)}=\frac{1}{|\boldsymbol{S}_i^{(t)}|}\displaystyle\sum_{\boldsymbol{x} \in \boldsymbol{S}^{(t)}} \boldsymbol{x}, \text{ for } i=1,...,k\]
+                </p>
+            </li>
+            <li>
+                <p class="latex">
+                    \[\boldsymbol{S}_i^{(t)}=\{\boldsymbol{x}:\|\boldsymbol{x}-\boldsymbol{m}_i\|^2 \le \|\boldsymbol{x}-\boldsymbol{m}_j\|^2 \quad \forall j, 1 \le j \le k\}\]
+                </p>
+            </li>
+            <li>
+                <p class="latex">
+                    \[\text{if }\exists \boldsymbol{x} \neq \boldsymbol{z}, \quad \forall \boldsymbol{x} \in \boldsymbol{S}_i^{(t)} \land \forall \boldsymbol{z} \in \boldsymbol{S}_i^{(t+1)}:\quad \text{repeat 1 and 2}\]
+                </p>
+            </li>
+        </ol>
+
+        <br>
+
+        <p class="article">
+            When the step three holds, \(\boldsymbol{S}_i\) are the set of clusters and \(\boldsymbol{m}_i\) are the means.
+        </p>
+    </article>
+</section>
+
+<section class="slide">
+    <article class="content" itemprop="articleBody">
+        <h1>Algorithm in python using numpy</h1>
+
+        <br>
+
+        <figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">random_partition</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+	<span class="n">clusters</span><span class="o">=</span><span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span>
+	<span class="n">means</span><span class="o">=</span><span class="p">[]</span>
+
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+		<span class="n">clusters</span><span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+	<span class="k">for</span> <span class="n">cluster</span> <span class="ow">in</span> <span class="n">clusters</span><span class="p">:</span>
+		<span class="n">means</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s">'Float64'</span><span class="p">))</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+
+	<span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">means</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s">'Float64'</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">kmeans</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+	<span class="n">iteration</span><span class="o">=</span><span class="mi">1</span>
+
+	<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+		<span class="n">old_centroids</span><span class="o">=</span><span class="n">means</span>
+
+		<span class="n">clusters</span><span class="o">=</span><span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span>
+
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+			<span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+				<span class="n">counter</span><span class="o">=</span><span class="mi">0</span>
+
+				<span class="k">for</span> <span class="n">mean</span> <span class="ow">in</span> <span class="n">means</span><span class="p">:</span>
+					<span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="nb">pow</span><span class="p">(</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">datum</span><span class="o">-</span><span class="n">means</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">math</span><span class="o">.</span><span class="nb">pow</span><span class="p">(</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">datum</span> <span class="o">-</span> <span class="n">mean</span><span class="p">),</span><span class="mi">2</span><span class="p">):</span>
+						<span class="n">counter</span><span class="o">+=</span><span class="mi">1</span>
+
+					<span class="k">if</span><span class="p">(</span><span class="n">counter</span><span class="o">==</span><span class="n">k</span><span class="p">):</span>
+						<span class="n">clusters</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datum</span><span class="p">)</span>
+
+		<span class="n">means</span><span class="o">=</span><span class="p">[]</span>
+
+		<span class="k">for</span> <span class="n">cluster</span> <span class="ow">in</span> <span class="n">clusters</span><span class="p">:</span>
+			<span class="n">means</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s">'Float64'</span><span class="p">))</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+
+		<span class="n">means</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">means</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s">'Float64'</span><span class="p">))</span>
+
+		<span class="n">new_centroids</span><span class="o">=</span><span class="n">means</span>
+
+		<span class="k">if</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">old_centroids</span><span class="p">,</span> <span class="n">new_centroids</span><span class="p">)):</span>
+			<span class="k">print</span><span class="p">(</span><span class="s">"non change after "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">iteration</span><span class="p">)</span> <span class="o">+</span> <span class="s">" iterations"</span><span class="p">)</span>
+
+			<span class="k">break</span>
+
+		<span class="n">iteration</span><span class="o">+=</span><span class="mi">1</span>
+
+	<span class="k">return</span> <span class="p">{</span>
+		<span class="s">"clusters"</span><span class="p">:</span> <span class="n">clusters</span><span class="p">,</span>
+		<span class="s">"means"</span><span class="p">:</span> <span class="n">means</span>
+	<span class="p">}</span>
+
+<span class="n">initial_means</span><span class="o">=</span><span class="n">random_partition</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+
+<span class="n">output</span><span class="o">=</span><span class="n">kmeans</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">initial_means</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+        </code></pre></figure>
+    </article>
+</section>
+		</section>
+
+		<section class="buttons_content">
+			<button class="btn_action" id="back">
+				&lt;
+			</button>
+
+			<button class="btn_action" id="next">
+				&gt;
+			</button>
+		</section>
+		</section>
+	</main>
+	</div>
+</body>
+</html>
+

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-155264062-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-155264062-1');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../css/general.css">
+    <link rel="stylesheet" href="css/index.css">
+    <script src="../js/libs/jquery_3.3.1.min.js"></script>
+    <script src="../js/general.js"></script>
+    <script src="js/index.js"></script>
+    <title>Bits sequence generator</title>
+</head>
+<body>
+    <section class="content">
+        <select id="type">
+            <option value="32">32 bits</option>
+            <option value="64">64 bits</option>
+        </select>
+        <label for="input">Real number:</label>
+        <input type="text" class="entry" id="input" placeholder="0">
+
+        <hr>
+
+        <p>Bits sequence:</p>
+
+        <p id="bits_sequence">0 00000000 00000000000000000000000</p>
+
+        <br>
+
+        <p>Binary floating point:</p>
+
+        <p id="bfpn">0.0x2<sup>0</sup></p>
+    </section>
+</body>
+</html>

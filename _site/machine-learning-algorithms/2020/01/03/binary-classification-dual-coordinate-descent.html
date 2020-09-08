@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-155264062-1"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-155264062-1');
+  </script>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Binary classification: Dual Coordinate Descent | Machine Learning with numerical examples</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Binary classification: Dual Coordinate Descent" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This is an iterative method proposed in 2008 to solve a SVM classification without dealing with Quadratic Programming (QP) solutions. Their creators proposed a first algorithm which is the basic form, and a second alternative, which is assumed to be more efficient." />
+<meta property="og:description" content="This is an iterative method proposed in 2008 to solve a SVM classification without dealing with Quadratic Programming (QP) solutions. Their creators proposed a first algorithm which is the basic form, and a second alternative, which is assumed to be more efficient." />
+<link rel="canonical" href="http://localhost:4000/machine-learning-algorithms/2020/01/03/binary-classification-dual-coordinate-descent.html" />
+<meta property="og:url" content="http://localhost:4000/machine-learning-algorithms/2020/01/03/binary-classification-dual-coordinate-descent.html" />
+<meta property="og:site_name" content="Machine Learning with numerical examples" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-01-03T00:00:00-04:00" />
+<script type="application/ld+json">
+{"headline":"Binary classification: Dual Coordinate Descent","dateModified":"2020-01-03T00:00:00-04:00","datePublished":"2020-01-03T00:00:00-04:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/machine-learning-algorithms/2020/01/03/binary-classification-dual-coordinate-descent.html"},"url":"http://localhost:4000/machine-learning-algorithms/2020/01/03/binary-classification-dual-coordinate-descent.html","description":"This is an iterative method proposed in 2008 to solve a SVM classification without dealing with Quadratic Programming (QP) solutions. Their creators proposed a first algorithm which is the basic form, and a second alternative, which is assumed to be more efficient.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/post.css">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        messageStyle: 'none',
+        tex2jax: {preview: 'none'},
+        CommonHTML: {
+          scale: 97
+        }
+      });
+
+      MathJax.Hub.Register.StartupHook("End", function () {
+        document.getElementsByClassName('mask_load')[0].style.display='none';
+      });
+    </script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/assets/jquery_3.3.1.min.js"></script>
+    <script src="/assets/post.js"></script><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Machine Learning with numerical examples" /></head>
+  <body>
+	<div class="container">
+	<main>
+		<section class="menu_slide menu_invisible" itemscope itemtype="http://schema.org/ItemList">
+		
+		</section>
+
+		<section class="slides_content">
+		<header class="post-header">
+			<h1 class="post-title p-name" itemprop="name headline">Binary classification: Dual Coordinate Descent</h1>
+			<p class="post-meta">
+				<time class="dt-published" datetime="2020-01-03T00:00:00-04:00" itemprop="datePublished">Jan 3, 2020
+				</time></p>
+
+			<i class="fa fa-bars" id="menu"></i>
+
+			<a href="/" title="Home">
+				<i class="fa fa-home"></i>
+			</a>
+			<a href="/about" title="About">
+				<i class="fa fa-question-circle"></i>
+			</a>
+			<a href="/privacy-policies" title="Read privacy policies">
+				<i class="fa fa-user-secret"></i>
+			</a>
+		</header>
+
+		<section class="slides" itemscope itemtype="http://schema.org/PresentationDigitalDocument" itemprop="articleBody">
+			<section class="slide">
+    <article class="content" itemprop="articleBody">
+        <h1>Overview</h1>
+
+        <p class="article">
+            This is an iterative method proposed in 2008 to solve a SVM classification 
+            without dealing with Quadratic Programming (QP) solutions. Their creators proposed a first
+            algorithm which is the basic form, and a second alternative, which is assumed to be more efficient.
+            The main reference can be found <a class="link" href="https://www.csie.ntu.edu.tw/~cjlin/papers/cddual.pdf">here</a>.
+        </p>
+
+        <br>
+
+        <p class="article">
+            An example is included for a better understanding.
+        </p>
+    </article>
+</section>
+
+<section class="slide">
+    <article class="content" itemprop="articleBody">
+        <h1>The optimization problem</h1>
+
+        <p class="article">
+            The dual optimization of a SVM is: 
+        </p>
+
+        <p class="latex">
+            \[max: f(\alpha_1,\alpha_2,...,\alpha_n)=\displaystyle\sum_{i=1}^n \alpha_i - \frac{1}{2}\displaystyle\sum_{i=1}^n\sum_{j=1}^n \boldsymbol{y}_i \boldsymbol{\alpha}_i (\boldsymbol{X}_i·\boldsymbol{X}_j)\boldsymbol{y}_j \boldsymbol{\alpha}_j\]
+        </p>
+
+        <p class="article">
+            Which can be converted to:
+        </p>
+
+        <p class="latex">
+            \[min: f(\alpha_1,\alpha_2,...,\alpha_n)=-\displaystyle\sum_{i=1}^n \alpha_i + \frac{1}{2}\displaystyle\sum_{i=1}^n\sum_{j=1}^n \boldsymbol{y}_i \boldsymbol{\alpha}_i (\boldsymbol{X}_i·\boldsymbol{X}_j)\boldsymbol{y}_j \boldsymbol{\alpha}_j\]
+        </p>
+
+        <p class="article">
+            And the idea is to try to find the values of\(\boldsymbol{\alpha_i}\). Knowing the values of
+            \(\boldsymbol{\alpha_i}\), we get the vector \(\boldsymbol{w}\), which is:
+        </p>
+
+        <p class="latex">
+            \[\boldsymbol{w}=\displaystyle\sum_{i=1}^m \boldsymbol{\alpha}_i\boldsymbol{y}_i\boldsymbol{X}_i\]
+        </p>
+
+        <p class="article">
+            And finally we can classify an unlabeled feature \(\boldsymbol{X}\) with:
+        </p>
+
+        <p class="latex">
+            \[label=sgn(\boldsymbol{w}^T \boldsymbol{X})\]
+        </p>
+    </article>
+</section>
+
+<section class="slide">
+    <article class="content" itemprop="articleBody">
+        <h1>The algorithm step by step</h1>
+
+        <ol>
+            <li>Set \(\boldsymbol{X}\): the set of features.</li>
+            <li>Set \(\boldsymbol{y}\): the set of labels.</li>
+            <li>Set \(C\): the penalty term. </li>
+            <li>Set \(nI\): the number of instances/samples. </li>
+            <li>Set \(nF\): the number of features. </li>
+            <li>Set \(\boldsymbol{\alpha}&larr;\{0_1,0_2,0_3,...,0_{nI}\}\): a zero-vector \(\alpha\) with \(nI\) elements.</li>
+            <li>Set \(\boldsymbol{w}&larr;\{0_1,0_2,0_3,...,0_{nF}\}\): a zero-vector \(\boldsymbol{w}\) with \(nF\) elements.</li>
+            <li>Set \(\nabla^P\boldsymbol{f}&larr;\{0_1,0_2,0_3,...,0_{nI}\}\): a zero vector \(\nabla^P\boldsymbol{f}\) with \(nI\) elements</li>
+            <li>Set \(\epsilon\): the machine epsilon.</li>
+            <li>Set \(K&larr;nI\)</li>
+            <li>Set \(k&larr;1\)</li>
+            <li>\(\boldsymbol{\alpha}\)&larr;randomPermutationOf(\(\boldsymbol{\alpha}\))</li>
+            <li>if \(k>K\): \(k=1\) and go to step 12</li>
+            <li>\(Q=\boldsymbol{X_k^T X_k}\)</li>
+            <li>\(G=\boldsymbol{y_k w_k^T X_k}-1\)</li>
+            <li>if \(\boldsymbol{\alpha}_k=0\):<p class="latex">\[\quad PG=min(G,0)\text{ and }\nabla^P \boldsymbol{f}_k=PG\]</p></li>
+            <li>else if \(\boldsymbol{\alpha}_k=C\):<p class="latex">\[\quad PG=max(G,0)\text{ and }\nabla^P \boldsymbol{f}_k=PG\]</p></li>
+            <li>else if \(0 < \boldsymbol{\alpha}_k < C\):<p class="latex">\[\quad PG=G\text{ and }\nabla^P \boldsymbol{f}_k=PG\]</p></li>
+            <li>\(M=max_j\nabla^P_j\boldsymbol{f}\)</li>
+            <li>\(m=min_j\nabla^P_j\boldsymbol{f}\)</li>
+            <li>if \(M-m<\epsilon\): exit</li>
+            <li>if \(|PG|\neq 0\):
+                <p class="latex">
+                    \[\hat{\boldsymbol{\alpha}}_k\leftarrow\boldsymbol{\alpha}_k\\
+                    \boldsymbol{\alpha}_k\leftarrow min(max(\hat{\boldsymbol{\alpha}}_k-G/Q,0),C)\\
+                    \boldsymbol{w}\leftarrow\boldsymbol{w}+(\boldsymbol{\alpha}-\hat{\boldsymbol{\alpha}})\boldsymbol{y}_k\boldsymbol{X}_k\]
+                </p>
+            </li>
+            <li>\(k=k+1\)</li>
+            <li>Go to step 13</li>
+        </ol>
+    </article>
+</section>
+
+<section class="slide">
+    <article class="content" itemprop="articleBody">
+        <h1>Python Code</h1>
+
+        <figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="n">alphas</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="n">projected_gradient_vector</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="k">global</span> <span class="n">W</span>
+    <span class="k">global</span> <span class="n">b</span>
+    <span class="k">global</span> <span class="n">C</span>
+    <span class="k">global</span> <span class="n">U</span>
+
+    <span class="n">W</span><span class="o">=</span><span class="n">w</span>
+
+    <span class="n">b</span><span class="o">=</span><span class="mi">0</span>
+
+    <span class="n">C</span><span class="o">=</span><span class="n">penalty</span>
+
+    <span class="n">U</span><span class="o">=</span><span class="n">C</span>
+    <span class="n">D</span><span class="o">=</span><span class="mi">0</span> 
+
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">alphas</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">alphas</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)):</span>
+
+    <span class="n">gradient</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">D</span><span class="o">*</span><span class="n">alphas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">alphas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+
+    <span class="n">projected_gradient</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">gradient</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">projected_gradient_vector</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">projected_gradient</span>
+
+    <span class="k">elif</span> <span class="n">alphas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="n">U</span><span class="p">:</span>
+
+    <span class="n">projected_gradient</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">gradient</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">projected_gradient_vector</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">projected_gradient</span>
+
+    <span class="k">elif</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">alphas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">U</span><span class="p">:</span>
+
+    <span class="n">projected_gradient</span><span class="o">=</span><span class="n">gradient</span>
+
+    <span class="n">projected_gradient_vector</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">projected_gradient</span>
+
+    <span class="n">M</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="nb">max</span><span class="p">(</span><span class="n">projected_gradient_vector</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="nb">min</span><span class="p">(</span><span class="n">projected_gradient_vector</span><span class="p">)</span>
+    <span class="n">eps</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+
+    <span class="k">if</span> <span class="n">M</span><span class="o">-</span><span class="n">m</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">:</span> 
+
+    <span class="n">W</span><span class="o">=</span><span class="n">w</span>
+
+    <span class="n">b</span><span class="o">=</span><span class="mi">0</span>
+
+    <span class="n">unlabeled</span> <span class="n">sample</span><span class="o">=</span><span class="p">[</span> <span class="mf">0.7534068</span><span class="p">,</span>  <span class="o">-</span><span class="mf">0.11394449</span><span class="p">,</span>  <span class="mf">0.71386598</span><span class="p">,</span>  <span class="mf">0.65815634</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.54870557</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.23729117</span><span class="p">,</span><span class="o">-</span><span class="mf">0.05749318</span><span class="p">,</span>  <span class="mf">0.43439269</span><span class="p">,</span>  <span class="mf">0.29711878</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0571938</span><span class="p">,</span>   <span class="mf">0.69956576</span><span class="p">,</span>  <span class="mf">0.31596177</span><span class="p">,</span><span class="mf">0.62519434</span><span class="p">,</span>  <span class="mf">0.59411043</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.30600538</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.04348982</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.18679726</span><span class="p">,</span>  <span class="mf">0.68839558</span><span class="p">,</span><span class="mf">0.04452071</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.11419554</span><span class="p">,</span>  <span class="mf">0.78293974</span><span class="p">,</span>  <span class="mf">0.10141534</span><span class="p">,</span>  <span class="mf">0.69814393</span><span class="p">,</span>  <span class="mf">0.66698174</span><span class="p">,</span><span class="o">-</span><span class="mf">0.6824632</span><span class="p">,</span>  <span class="o">-</span><span class="mf">0.26950087</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1937647</span><span class="p">,</span>  <span class="mf">0.49933764</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.14682283</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.6464708</span> <span class="p">]</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s">"w = "</span><span class="p">,</span> <span class="n">W</span><span class="p">)</span>
+
+    <span class="n">type_cancer</span><span class="o">=</span><span class="s">"benign"</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">unlabeled_sample</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">type_cancer</span><span class="o">=</span><span class="s">"malignant"</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s">"unlabeled_sample = "</span><span class="p">,</span> <span class="n">type_cancer</span><span class="p">)</span>
+
+    <span class="k">return</span>
+
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">projected_gradient</span><span class="p">)</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+
+    <span class="n">old_alpha</span><span class="o">=</span><span class="n">alphas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="n">new_alpha</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span> <span class="nb">max</span><span class="p">(</span> <span class="n">old_alpha</span> <span class="o">-</span> <span class="p">(</span> <span class="n">gradient</span><span class="o">/</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">)</span> <span class="o">+</span> <span class="n">D</span> <span class="p">)</span> <span class="p">),</span> <span class="mi">0</span> <span class="p">),</span> <span class="n">U</span> <span class="p">)</span>
+
+    <span class="n">alphas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">new_alpha</span>
+
+    <span class="n">append_descent</span><span class="o">=</span><span class="p">(</span><span class="n">new_alpha</span><span class="o">-</span><span class="n">old_alpha</span><span class="p">)</span><span class="o">*</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="o">+</span><span class="n">append_descent</span>
+
+<span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+        </code></pre></figure>
+    </article>
+</section>
+
+<section class="slide">
+    <article class="content" itemprop="articleBody">
+        <h1>Example and tests</h1>
+
+        <p class="article">
+            Classify a breast cancer in benign or malignant using the breast cancer wisconsin
+            (diagnostic) dataset of 1995 provided by the UCI:
+        </p>
+
+        <br>
+
+        <p class="article">
+            <a class="link" href="/assets/wdbcx.txt" target="_blank">Feature set X</a>
+        </p>
+
+        <br>
+
+        <p class="article">
+            <a class="link" href="/assets/wdbcy.txt" target="_blank">Label set y</a>
+        </p>
+
+        <br>
+
+        <p class="article">
+            The above dataset is scaled using <em>numpy</em> and the original can be found <a class="link" href="https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic)">here</a>.
+        </p>
+
+        <br>
+
+        <p class="article">
+            If we run the previous python function, the result will be different in each execution, even if
+            the same dataset is used. That is because this algorithm is stochastic, i.e., the output or
+            result doesn't depend on the given input:
+        </p>
+
+        <br>
+
+        <p class="python_output">
+            w = [0.18874253,  0.08090136, -0.41792539,  0.08950176,  0.05668385,  0.53847201, -0.49772711,  0.03788398,  0.02225932,  0.06727486,  -0.25157467,  0.03661574,  0.12969371,  0.18334708, -0.09503387,  -0.00958155,  0.11937432,  0.05633591, -0.05078202,  0.00330047,  -0.62323928, -0.10821759, -0.07951989,  0.51676867, -0.03020228,  -0.15570214,  0.16463813, -0.1225691 ,  0.01889327, -0.14996891]
+        </p>
+        <p class="python_output">
+            unlabeled sample = malignant 
+        </p>
+        <p class="python_output">
+            score: 0.8165137614678899
+        </p>
+
+        <br><br>
+
+        <p class="python_output">
+            w = [0.26862065, -0.08969064,  0.10675882, -0.20480725,  0.03182878,  0.56387106, -0.29113376,  0.01744558, -0.00306338, -0.17204584,  -0.42010163, -0.00475761,  0.27319777,  0.18194839, -0.0596274 ,  -0.140052  ,  0.16010498,  0.07033602, -0.07144339,  0.05492784,  -0.85372987,  0.10837559, -0.52158134,  0.78762591, -0.08777704,  0.02161435, -0.09353732, -0.10955592,  0.04298491, -0.08985858]
+        </p>
+        <p class="python_output">
+            unlabeled sample = malignant 
+        </p>
+        <p class="python_output">
+            score: 0.9174311926605505
+        </p>
+
+        <br><br>
+
+        <p class="python_output">
+            w = [0.60741604, -0.0783166 ,  0.19084787, -0.57105094,  0.0254105 ,  0.31805248,  0.0221376 , -0.17821628, -0.05557811,  0.02677952,  -0.22984055,  0.02629149,  0.38325686, -0.06919096, -0.03499296,  -0.00773795,  0.10934844, -0.13581128, -0.0997967 ,  0.02544605,  -0.94389006,  0.06884725, -1.00184867,  1.40059994, -0.02963356,  0.12541018, -0.12126272, -0.06037537,  0.08014855, -0.21461975]
+        </p>
+        <p class="python_output">
+            unlabeled sample = malignant 
+        </p>
+        <p class="python_output">
+            score: 0.8990825688073395
+        </p>
+    </article>
+</section>
+		</section>
+
+		<section class="buttons_content">
+			<button class="btn_action" id="back">
+				&lt;
+			</button>
+
+			<button class="btn_action" id="next">
+				&gt;
+			</button>
+		</section>
+		</section>
+	</main>
+	</div>
+</body>
+</html>
+
